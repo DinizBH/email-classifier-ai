@@ -4,6 +4,7 @@ import pdfplumber
 from openai import OpenAI
 import json
 import os
+import re
 
 app = FastAPI()
 
@@ -19,6 +20,11 @@ app.add_middleware(
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+def extract_json(text):
+    cleaned = re.sub(r"```.*?\n", "", text)
+    cleaned = cleaned.replace("```", "").strip()
+    return cleaned
+
 @app.post("/process-email")
 async def process_email(text: str = Form(None), file: UploadFile = File(None)):
     if file:
@@ -29,30 +35,40 @@ async def process_email(text: str = Form(None), file: UploadFile = File(None)):
         else:
             text = (await file.read()).decode("utf-8")
 
-    prompt = f"""
-    Analise o e-mail abaixo e responda em JSON válido:
+    system_prompt = """
+    Você é um classificador de e-mails. 
+    Responda **apenas** com JSON válido, sem markdown, sem blocos de código.
+    """
+
+    user_prompt = f"""
+    Analise o e-mail abaixo e responda *apenas* o JSON.
 
     EMAIL:
     {text}
 
-    O JSON deve conter:
+    O JSON deve ser exatamente assim:
+
     {{
       "category": "Produtivo" ou "Improdutivo",
-      "suggested_reply": "Texto da resposta automática"
+      "suggested_reply": "Resposta automática profissional"
     }}
     """
 
     rsp = client.chat.completions.create(
-        model="gpt-4o-mini",  
-        messages=[{"role": "user", "content": prompt}],
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
         temperature=0.3
     )
 
     ai_text = rsp.choices[0].message.content
+    ai_text_clean = extract_json(ai_text)
 
     try:
-        ai_json = json.loads(ai_text)
-    except:
+        ai_json = json.loads(ai_text_clean)
+    except Exception:
         ai_json = {
             "category": "Erro",
             "suggested_reply": "A IA não retornou JSON válido.",
