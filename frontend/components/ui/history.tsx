@@ -48,6 +48,20 @@ export default function History() {
                   <strong>Entrada:</strong>{" "}
                   {item.input ? item.input.slice(0, 120) + "..." : "(vazio)"}
                 </p>
+                <p>
+                  <strong>Resposta sugerida:</strong>{" "}
+                  {item.suggested_reply
+                    ? item.suggested_reply.slice(0, 120) + "..."
+                    : "(vazio)"}
+                </p>
+
+                {item.extracted_text && (
+                  <p>
+                    <strong>Texto extraído:</strong>{" "}
+                    {item.extracted_text.slice(0, 120) + "..."}
+                  </p>
+                )}
+
                 {item.fileName && (
                   <p>
                     <strong>Arquivo:</strong> {item.fileName}

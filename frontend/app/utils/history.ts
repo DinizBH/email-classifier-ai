@@ -13,7 +13,9 @@ export function saveHistory(entry: {
   const existing = JSON.parse(localStorage.getItem("history") || "[]");
   existing.push(entry);
 
-  localStorage.setItem("history", JSON.stringify(existing));
+  const limited = existing.slice(-6);
+
+  localStorage.setItem("history", JSON.stringify(limited));
 }
 
 export function loadHistory() {

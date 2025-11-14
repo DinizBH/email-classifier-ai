@@ -25,8 +25,9 @@ export default function Home() {
       input: text,
       fileName: file?.name || null,
       category: response.category,
-      suggested_reply: response.suggested_reply,
-      extracted_text: response.extracted_text,
+
+      suggested_reply: response.suggested_reply ?? "",
+      extracted_text: response.extracted_text ?? "",
       timestamp: new Date().toISOString(),
     });
 
