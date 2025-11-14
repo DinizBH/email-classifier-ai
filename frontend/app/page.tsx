@@ -5,6 +5,8 @@ import { processEmail } from "@/lib/api";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import History from "@/components/ui/history";
+import { Github } from "lucide-react";
 
 export default function Home() {
   const [text, setText] = useState("");
@@ -38,6 +40,22 @@ export default function Home() {
               <CardTitle className="text-3xl">
                 Processador de Email com IA
               </CardTitle>
+              <h2 className="text-md font-medium text-red-500 ">
+                Por favor, esteja ciente que os dados enviados são processados
+                pela OPENAI. Cuidado com informações sensíveis.
+              </h2>
+              <h2 className="text-md font-medium text-cyan-600">
+                Esse é um projeto de demonstração. Veja mais informações no
+                repositório do {""}
+                <a
+                  href="https://github.com/DinizBH/email-classifier-ai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline font-semibold hover:text-cyan-800 transition"
+                >
+                  GitHub.
+                </a>
+              </h2>
             </CardHeader>
 
             <CardContent>
@@ -111,6 +129,19 @@ export default function Home() {
                   </p>
                 </div>
               )}
+              {/* Histórico */}
+              <History />
+              <footer className="mt-12 text-center w-full text-neutral-700 dark:text-neutral-300">
+                <a
+                  href="https://github.com/DinizBH/email-classifier-ai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center border-blue-900 border-2 rounded p-2 gap-2 bg-blue-900 font-medium hover:bg-white hover:border-black hover:text-blue-900 text-white transition"
+                >
+                  <Github size={18} />
+                  Ver repositório no GitHub
+                </a>
+              </footer>
             </CardContent>
           </Card>
         </div>
