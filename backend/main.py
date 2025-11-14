@@ -1,7 +1,19 @@
 from fastapi import FastAPI, UploadFile, File, Form
+from fastapi.middleware.cors import CORSMiddleware
 import pdfplumber
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+    "https://email-classifier-ai-omega.vercel.app",
+],    # você pode trocar para o domínio da vercel depois
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.post("/process-email")
 async def process_email(text: str = Form(None), file: UploadFile = File(None)):
