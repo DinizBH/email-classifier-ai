@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { saveHistory } from "@/app/utils/history";
 
 export default function History() {
   const [history, setHistory] = useState<any[]>([]);
@@ -12,7 +11,6 @@ export default function History() {
     try {
       const stored = JSON.parse(localStorage.getItem("history") || "[]");
 
-      // Garante que NUNCA será undefined
       if (Array.isArray(stored)) {
         setHistory(stored);
       } else {
@@ -23,9 +21,27 @@ export default function History() {
     }
   }, []);
 
+  const clearHistory = () => {
+    if (typeof window === "undefined") return;
+
+    localStorage.removeItem("history");
+    setHistory([]);
+  };
+
   return (
     <div className="mt-8 p-4 border rounded bg-white dark:bg-neutral-900">
-      <h3 className="text-xl font-semibold mb-3">Histórico</h3>
+      <div className="flex justify-between items-center mb-3">
+        <h3 className="text-xl font-semibold">Histórico</h3>
+
+        {history.length > 0 && (
+          <button
+            onClick={clearHistory}
+            className="text-sm text-red-600 hover:underline"
+          >
+            Limpar histórico
+          </button>
+        )}
+      </div>
 
       {history.length === 0 ? (
         <p className="text-neutral-700 dark:text-neutral-400 text-sm">
@@ -36,43 +52,34 @@ export default function History() {
           {history
             .slice()
             .reverse()
-            .map((item, index) => (
-              <li
-                key={index}
-                className="p-3 border rounded bg-neutral-50 dark:bg-neutral-800"
-              >
-                <p>
-                  <strong>Categoria:</strong> {item.category}
-                </p>
-                <p>
-                  <strong>Entrada:</strong>{" "}
-                  {item.input ? item.input.slice(0, 120) + "..." : "(vazio)"}
-                </p>
-                <p>
-                  <strong>Resposta sugerida:</strong>{" "}
-                  {item.suggested_reply
-                    ? item.suggested_reply.slice(0, 120) + "..."
-                    : "(vazio)"}
-                </p>
+            .map((item, index) => {
+              const finalText = item.extracted_text || item.input || "(vazio)";
 
-                {item.extracted_text && (
+              return (
+                <li
+                  key={index}
+                  className="p-3 border rounded bg-neutral-50 dark:bg-neutral-800"
+                >
                   <p>
-                    <strong>Texto extraído:</strong>{" "}
-                    {item.extracted_text.slice(0, 120) + "..."}
+                    <strong>Categoria:</strong> {item.category}
                   </p>
-                )}
 
-                {item.fileName && (
                   <p>
-                    <strong>Arquivo:</strong> {item.fileName}
+                    <strong>Texto:</strong> {finalText.slice(0, 120) + "..."}
                   </p>
-                )}
 
-                <p className="text-xs text-neutral-500 mt-1">
-                  {new Date(item.timestamp).toLocaleString()}
-                </p>
-              </li>
-            ))}
+                  {item.fileName && (
+                    <p>
+                      <strong>Arquivo:</strong> {item.fileName}
+                    </p>
+                  )}
+
+                  <p className="text-xs text-neutral-500 mt-1">
+                    {new Date(item.timestamp).toLocaleString()}
+                  </p>
+                </li>
+              );
+            })}
         </ul>
       )}
     </div>
