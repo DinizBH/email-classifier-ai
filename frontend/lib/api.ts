@@ -1,18 +1,6 @@
-// Salva o histórico no localStorage
-function saveHistory(entry: {
-  input: string;
-  fileName: string | null;
-  category: string;
-  suggested_reply: string;
-  extracted_text?: string;
-  timestamp: string;
-}) {
-  if (typeof window === "undefined") return;
+"use client";
 
-  const existing = JSON.parse(localStorage.getItem("history") || "[]");
-  existing.push(entry);
-  localStorage.setItem("history", JSON.stringify(existing));
-}
+import { saveHistory } from "@/app/utils/history";
 
 export async function processEmail(data: { text: string; file: File | null }) {
   const formData = new FormData();

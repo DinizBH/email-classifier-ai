@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import History from "@/components/ui/history";
 import { Github } from "lucide-react";
+import { saveHistory } from "@/app/utils/history";
 
 export default function Home() {
   const [text, setText] = useState("");
@@ -19,6 +20,15 @@ export default function Home() {
 
     // Chama a API enviando texto + arquivo
     const response = await processEmail({ text, file });
+
+    saveHistory({
+      input: text,
+      fileName: file?.name || null,
+      category: response.category,
+      suggested_reply: response.suggested_reply,
+      extracted_text: response.extracted_text,
+      timestamp: new Date().toISOString(),
+    });
 
     setResult(response);
     setLoading(false);
