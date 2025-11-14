@@ -15,6 +15,7 @@ export default function Home() {
   const handleProcess = async () => {
     setLoading(true);
 
+    // Chama a API enviando texto + arquivo
     const response = await processEmail({ text, file });
 
     setResult(response);
@@ -34,7 +35,9 @@ export default function Home() {
         <div className="flex flex-col justify-center items-center w-full gap-6 text-center sm:items-start sm:text-left">
           <Card className="w-full justify-center">
             <CardHeader>
-              <CardTitle className="text-lg">Processar Email</CardTitle>
+              <CardTitle className="text-3xl">
+                Processador de Email com IA
+              </CardTitle>
             </CardHeader>
 
             <CardContent>
@@ -51,19 +54,38 @@ export default function Home() {
 
               {/* Upload */}
               <div className="mb-4">
-                <input
-                  type="file"
-                  accept=".txt,.pdf"
-                  onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                />
+                <label className="flex items-center justify-center cursor-pointer bg-indigo-600 hover:bg-indigo-500 text-white border-2 border-black rounded p-3 max-w-sm transition">
+                  📄 Selecionar PDF ou TXT
+                  <input
+                    type="file"
+                    accept="application/pdf,text/plain"
+                    onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                    className="hidden"
+                  />
+                </label>
+
+                {file && (
+                  <p className="text-sm text-neutral-800 dark:text-neutral-300 mt-2">
+                    Arquivo selecionado: <strong>{file.name}</strong>
+                  </p>
+                )}
               </div>
 
               {/* Botões */}
               <div className="flex gap-2">
-                <Button onClick={handleProcess} disabled={loading}>
+                <Button
+                  onClick={handleProcess}
+                  disabled={loading}
+                  className="transition cursor-pointer"
+                >
                   {loading ? "Processando..." : "Processar"}
                 </Button>
-                <Button variant="ghost" onClick={handleClear}>
+
+                <Button
+                  variant="ghost"
+                  onClick={handleClear}
+                  className="border-2 border-black  transition cursor-pointer"
+                >
                   Limpar
                 </Button>
               </div>
@@ -74,8 +96,10 @@ export default function Home() {
                   <p>
                     <strong>Categoria:</strong> {result.category}
                   </p>
-                  <p>
-                    <strong>Resposta sugerida:</strong> {result.suggested_reply}
+
+                  <p className="mt-2">
+                    <strong>Resposta sugerida:</strong> <br />
+                    {result.suggested_reply}
                   </p>
 
                   <p className="mt-2">
