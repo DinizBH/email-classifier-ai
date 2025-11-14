@@ -11,7 +11,17 @@ export function saveHistory(entry: {
   if (typeof window === "undefined") return;
 
   const existing = JSON.parse(localStorage.getItem("history") || "[]");
-  existing.push(entry);
+
+  const alreadyExists = existing.some(
+    (item: any) =>
+      item.input === entry.input &&
+      item.suggested_reply === entry.suggested_reply &&
+      item.category === entry.category
+  );
+
+  if (!alreadyExists) {
+    existing.push(entry);
+  }
 
   const limited = existing.slice(-6);
 

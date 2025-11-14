@@ -53,7 +53,10 @@ export default function History() {
             .slice()
             .reverse()
             .map((item, index) => {
-              const finalText = item.extracted_text || item.input || "(vazio)";
+              const finalText =
+                item.extracted_text?.trim() ||
+                item.input?.trim() ||
+                "(Sem texto)";
 
               return (
                 <li
@@ -67,6 +70,13 @@ export default function History() {
                   <p>
                     <strong>Texto:</strong> {finalText.slice(0, 120) + "..."}
                   </p>
+
+                  {item.suggested_reply && (
+                    <p className="mt-2">
+                      <strong>Resposta da IA:</strong>{" "}
+                      {item.suggested_reply.slice(0, 150) + "..."}
+                    </p>
+                  )}
 
                   {item.fileName && (
                     <p>
