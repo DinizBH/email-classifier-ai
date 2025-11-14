@@ -19,6 +19,7 @@ export default function Home() {
 
     setResult(response);
     setLoading(false);
+    console.log("Resposta da IA:", response);
   };
 
   const handleClear = () => {

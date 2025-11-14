@@ -1,11 +1,7 @@
-export async function processEmail(input: {
-  text?: string;
-  file?: File | null;
-}) {
+export async function processEmail(data: { text: string; file: File | null }) {
   const formData = new FormData();
-
-  if (input.text) formData.append("text", input.text);
-  if (input.file) formData.append("file", input.file);
+  formData.append("text", data.text);
+  if (data.file) formData.append("file", data.file);
 
   const res = await fetch(
     "https://email-classifier-ai-49kp.onrender.com/process-email",
